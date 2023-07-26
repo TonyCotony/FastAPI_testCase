@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  db_mysql:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'db_cargo'
+      MYSQL_ROOT_PASSWORD: '12345'
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - my-db:/var/lib/mysql
+    networks:
+      - db_mysql_redis
+
+
+  redis:
+    image: redis
+    container_name: redis
+    command: [ "redis-server", "--port", "6379", "--appendonly", "yes","--maxmemory", "1gb", "--maxmemory-policy", "allkeys-lru" ]
+    ports:
+      - "6379"
+    volumes:
+      - .:/redis.conf
+    networks:
+      - db_mysql_redis
+
+  api:
+    build: .
+    container_name: fastapi-app
+    command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8080
+    environment:
+      PORT: 8080
+    ports:
+      - '8080:8080'
+    restart: "no"
+
+networks:
+  db_mysql_redis:
+    driver: bridge
