@@ -1,21 +1,31 @@
 version: '3'
 
 services:
+  rabbitmq:
+    image: rabbitmq:3.9.29
+    restart: always
+    ports:
+      - '5672:5672'
+    expose:
+      - '5672'
+    networks:
+      - db_mysql_redis
+
+
   db_mysql:
-    image: mysql:5.7
+    image: mysql
     restart: always
     environment:
       MYSQL_DATABASE: 'db_cargo'
-      MYSQL_ROOT_PASSWORD: '12345'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
     ports:
       - '3306:3306'
     expose:
       - '3306'
-    volumes:
-      - my-db:/var/lib/mysql
+#    volumes:
+#      - my-db:/var/lib/mysql
     networks:
       - db_mysql_redis
-
 
   redis:
     image: redis
@@ -27,7 +37,6 @@ services:
       - .:/redis.conf
     networks:
       - db_mysql_redis
-
   api:
     build: .
     container_name: fastapi-app
@@ -36,7 +45,10 @@ services:
       PORT: 8080
     ports:
       - '8080:8080'
-    restart: "no"
+    restart: always
+    networks:
+      - db_mysql_redis
+
 
 networks:
   db_mysql_redis:
