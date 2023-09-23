@@ -57,7 +57,7 @@ async def register_cargo(
 
 
 async def get_cargo(cargo_id: CargoId, db_session: AsyncSession) -> ShowCargo or CargoWithoutDeliveryPrice or str:
-    """возвращает груз с выбранным id"""
+    """Возвращает груз с выбранным id"""
     try:
         query = select(Cargo).filter(Cargo.id == cargo_id.id)
         result = await db_session.execute(query)
@@ -133,7 +133,7 @@ def serialize_cargo_n_delivery_cost(cargo: ShowCargo) -> ShowCargo:
 
 
 async def get_cargo_types(db_session: AsyncSession) -> CargoTypesDTO or str:
-    """достает с базы и сериализует данные для возврата"""
+    """Достает с базы и сериализует данные для возврата"""
     query = select(CargoType)
     try:
         result = await db_session.execute(query)
@@ -171,7 +171,7 @@ async def get_user_session_id(db_session: AsyncSession, session_id: UUID) -> int
 
 
 def send_register_cargo_data_to_rabbit(cargo_id: int) -> None:
-    """отправляем ID груза в rabbitMQ, для рассчета его стоимости"""
+    """Отправляем ID груза в rabbitMQ, для рассчета его стоимости"""
 
     # изменить все временные данные, сохранить их в сеттингс/инпут
     exchange_name = settings.rabbitMQ.exchange_name

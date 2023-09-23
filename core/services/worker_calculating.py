@@ -55,7 +55,7 @@ async def calculate_delivery_cost(cargo: Cargo) -> float:
 
 
 async def get_usd_currency() -> float:
-    """запрос к redis для получения кешированного курса, елси подключение установить не удается,
+    """Запрос к redis для получения кешированного курса, елси подключение установить не удается,
     то делаем запрос к сайту из ТЗ и возвращаем курс"""
     try:
         redis_connection = get_redis_connection()
